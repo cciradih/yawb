@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.enumeration;
+package org.eu.cciradih.yawb.enumeration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum TaskEnum {
-    WEB_WX_NEW_LOGIN_PAGE_TASK("WebWxNewLoginPageTask"),
+    WEB_WX_TASK("WebWxTask"),
     SYNC_CHECK_TASK("SyncCheckTask"),
     ;
     private final String name;

@@ -1,7 +1,9 @@
-package org.eu.cciradih.wechat.configuration;
+package org.eu.cciradih.yawb.configuration;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import okhttp3.OkHttpClient;
-import org.eu.cciradih.wechat.component.CookieJarComponent;
+import org.eu.cciradih.yawb.component.CookieJarComponent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -27,5 +29,11 @@ public class BeanConfiguration {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         threadPoolTaskScheduler.setPoolSize(availableProcessors);
         return threadPoolTaskScheduler;
+    }
+
+    @Bean
+    public Cache<String, String> cache() {
+        return Caffeine.newBuilder()
+                .build();
     }
 }

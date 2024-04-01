@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.data;
+package org.eu.cciradih.yawb.data.transfer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,4 +53,14 @@ public class WeChatTransfer {
 
     @JsonProperty("AddMsgList")
     private List<WeChatMsgTransfer> addMsgList;
+
+    @JsonProperty("Msg")
+    private WeChatSendMsgTransfer msg;
+
+    @JsonProperty("Scene")
+    private Integer scene;
+
+    private String toUserName;
+
+    private String content;
 }

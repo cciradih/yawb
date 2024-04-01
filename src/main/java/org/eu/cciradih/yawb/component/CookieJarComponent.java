@@ -1,6 +1,5 @@
-package org.eu.cciradih.wechat.component;
+package org.eu.cciradih.yawb.component;
 
-import lombok.Data;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@Data
 @Component
 public class CookieJarComponent implements CookieJar {
     private final Map<String, List<Cookie>> COOKIE_LIST_MAP = Collections.synchronizedMap(new HashMap<>());

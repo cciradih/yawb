@@ -1,11 +1,12 @@
-package org.eu.cciradih.wechat.component;
+package org.eu.cciradih.yawb.component;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import okhttp3.*;
-import org.eu.cciradih.wechat.data.WeChatTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatSendMsgTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
@@ -16,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,15 +43,14 @@ public class HttpClientComponent {
     public WeChatTransfer getJsLogin() {
         long time = new Date().getTime();
         String redirectUri = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?mod=desktop";
-
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")
                 .host("login.wx.qq.com")
                 .addPathSegment("jslogin")
                 .addQueryParameter("appid", "wx782c26e4c19acffb")
-                .addQueryParameter("redirect_uri", redirectUri)
-                .addQueryParameter("lang", "zh_CN")
                 .addQueryParameter("fun", "new")
+                .addQueryParameter("lang", "zh_CN")
+                .addQueryParameter("redirect_uri", redirectUri)
                 .addQueryParameter("_", String.valueOf(time))
                 .build();
 
@@ -66,12 +67,12 @@ public class HttpClientComponent {
         return this.parseStringResponse(response);
     }
 
-    public String getQrCodeUri(String jsLogin) {
+    public String getQrCodeUri(String uuid) {
         return new HttpUrl.Builder()
                 .scheme("https")
                 .host("login.wx.qq.com")
                 .addPathSegment("qrcode")
-                .addPathSegment(jsLogin)
+                .addPathSegment(uuid)
                 .build()
                 .toString();
     }
@@ -83,11 +84,11 @@ public class HttpClientComponent {
                 .scheme("https")
                 .host("login.wx.qq.com")
                 .addPathSegments("cgi-bin/mmwebwx-bin/login")
-                .addQueryParameter("r", String.valueOf(time))
-                .addQueryParameter("_", String.valueOf(time))
                 .addQueryParameter("loginicon", "true")
-                .addQueryParameter("uuid", uuid)
+                .addQueryParameter("r", String.valueOf(time))
                 .addQueryParameter("tip", "0")
+                .addQueryParameter("uuid", uuid)
+                .addQueryParameter("_", String.valueOf(time))
                 .build();
 
         Request request = new Request.Builder()
@@ -112,9 +113,9 @@ public class HttpClientComponent {
         Request request = new Request.Builder()
                 .get()
                 .url(httpUrl)
-                .header("version", "2.0.0")
                 .header("extspam", EXTSPAM)
                 .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("version", "2.0.0")
                 .build();
 
         Response response = this.okHttpClient.newCall(request).execute();
@@ -141,13 +142,14 @@ public class HttpClientComponent {
         baseRequest.setBaseRequest(weChatTransfer);
         String content = this.objectMapper.writeValueAsString(baseRequest);
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, content);
+        RequestBody requestBody = RequestBody.create(content, mediaType);
 
         Request request = new Request.Builder()
                 .post(requestBody)
                 .url(httpUrl)
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
+
         ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
         if (responseBody == null) {
             throw new RuntimeException();
@@ -163,19 +165,20 @@ public class HttpClientComponent {
                 .scheme("https")
                 .host(weChatTransfer.getHost())
                 .addPathSegments("cgi-bin/mmwebwx-bin/webwxgetcontact")
-                .addQueryParameter("skey", weChatTransfer.getSKey())
                 .addQueryParameter("pass_ticket", weChatTransfer.getPassTicket())
                 .addQueryParameter("rr", String.valueOf(time))
+                .addQueryParameter("skey", weChatTransfer.getSKey())
                 .build();
 
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, "{}");
+        RequestBody requestBody = RequestBody.create("{}", mediaType);
 
         Request request = new Request.Builder()
                 .post(requestBody)
                 .url(httpUrl)
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
+
         ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
         if (responseBody == null) {
             throw new RuntimeException();
@@ -191,12 +194,12 @@ public class HttpClientComponent {
                 .scheme("https")
                 .host(weChatTransfer.getHost())
                 .addPathSegments("cgi-bin/mmwebwx-bin/synccheck")
-                .addQueryParameter("skey", weChatTransfer.getSKey())
-                .addQueryParameter("sid", weChatTransfer.getWxSid())
-                .addQueryParameter("uin", weChatTransfer.getWxUin())
                 .addQueryParameter("deviceid", weChatTransfer.getDeviceId())
-                .addQueryParameter("synckey", weChatTransfer.getSyncKey().toString())
                 .addQueryParameter("r", String.valueOf(time))
+                .addQueryParameter("sid", weChatTransfer.getWxSid())
+                .addQueryParameter("skey", weChatTransfer.getSKey())
+                .addQueryParameter("synckey", weChatTransfer.getSyncKey().toString())
+                .addQueryParameter("uin", weChatTransfer.getWxUin())
                 .addQueryParameter("_", String.valueOf(time))
                 .build();
 
@@ -209,7 +212,6 @@ public class HttpClientComponent {
         if (responseBody == null) {
             throw new RuntimeException();
         }
-
         String response = responseBody.string();
         return this.parseStringResponse(response);
     }
@@ -221,10 +223,10 @@ public class HttpClientComponent {
                 .scheme("https")
                 .host(weChatTransfer.getHost())
                 .addPathSegments("cgi-bin/mmwebwx-bin/webwxsync")
-                .addQueryParameter("sid", weChatTransfer.getWxSid())
-                .addQueryParameter("skey", weChatTransfer.getSKey())
                 .addQueryParameter("pass_ticket", weChatTransfer.getPassTicket())
                 .addQueryParameter("rr", String.valueOf(time))
+                .addQueryParameter("sid", weChatTransfer.getWxSid())
+                .addQueryParameter("skey", weChatTransfer.getSKey())
                 .build();
 
         WeChatTransfer baseRequest = new WeChatTransfer();
@@ -233,11 +235,12 @@ public class HttpClientComponent {
         baseRequest.setCheckSyncKey(weChatTransfer.getSyncKey());
         String content = this.objectMapper.writeValueAsString(baseRequest);
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, content);
+        RequestBody requestBody = RequestBody.create(content, mediaType);
 
         Request request = new Request.Builder()
                 .post(requestBody)
                 .url(httpUrl)
+                .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
 
         ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
@@ -252,6 +255,49 @@ public class HttpClientComponent {
     }
 
     @SneakyThrows
+    public void postWebWxSendMsg(WeChatTransfer weChatTransfer) {
+        long time = new Date().getTime() / 10000 * 10000;
+        long random = new SecureRandom().nextLong(1000, 9999);
+        String id = String.valueOf(time + random);
+        WeChatSendMsgTransfer weChatSendMsgTransfer = WeChatSendMsgTransfer.builder()
+                .localId(id)
+                .clientMsgId(id)
+                .fromUserName(weChatTransfer.getUser().getUserName())
+                .toUserName(weChatTransfer.getToUserName())
+                .type(1)
+                .content(weChatTransfer.getContent())
+                .build();
+        WeChatTransfer baseRequest = new WeChatTransfer();
+        baseRequest.setBaseRequest(weChatTransfer);
+        baseRequest.setMsg(weChatSendMsgTransfer);
+        baseRequest.setScene(0);
+        String content = this.objectMapper.writeValueAsString(baseRequest);
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody requestBody = RequestBody.create(content, mediaType);
+
+        HttpUrl httpUrl = new HttpUrl.Builder()
+                .scheme("https")
+                .host(weChatTransfer.getHost())
+                .addPathSegments("cgi-bin/mmwebwx-bin/webwxsendmsg")
+                .addQueryParameter("pass_ticket", weChatTransfer.getPassTicket())
+                .addQueryParameter("lang", "zh_CN")
+                .build();
+
+        Request request = new Request.Builder()
+                .post(requestBody)
+                .url(httpUrl)
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .build();
+
+        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
+        if (responseBody == null) {
+            throw new RuntimeException();
+        }
+        String response = responseBody.string();
+        System.out.println(response);
+    }
+
+    @SneakyThrows
     private WeChatTransfer parseStringResponse(String response) {
         Map<String, String> responseMap = new HashMap<>();
         String[] kvsStrings = response.split(";", 2);
@@ -261,6 +307,7 @@ public class HttpClientComponent {
                 responseMap.put(kvStrings[0].trim(), kvStrings[1].trim());
             }
         });
+
         WeChatTransfer weChatTransfer = new WeChatTransfer();
         if (StringUtils.hasText(responseMap.get("window.QRLogin.code"))) {
             weChatTransfer.setCode(responseMap.get("window.QRLogin.code"));
@@ -297,6 +344,7 @@ public class HttpClientComponent {
         if (responseBody == null) {
             throw new RuntimeException();
         }
+
         WeChatTransfer weChatTransfer = new WeChatTransfer();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -304,6 +352,7 @@ public class HttpClientComponent {
         byte[] bytes = responseString.getBytes(StandardCharsets.UTF_8);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         Document document = documentBuilder.parse(byteArrayInputStream);
+
         NodeList errorList = document.getElementsByTagName("error");
         if (errorList.getLength() > 0) {
             Element error = (Element) errorList.item(0);
