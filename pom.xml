@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.eu.cciradih</groupId>
-    <artifactId>wechat</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>wechat</name>
-    <description>wechat</description>
+    <artifactId>yawb</artifactId>
+    <version>1.0.1</version>
+    <name>yawb</name>
+    <description>Yet Another WeChat Bot</description>
     <properties>
         <java.version>17</java.version>
     </properties>

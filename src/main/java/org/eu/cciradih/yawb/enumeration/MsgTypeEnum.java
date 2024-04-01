@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.enumeration;
+package org.eu.cciradih.yawb.enumeration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

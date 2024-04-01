@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.data.transfer;
+package org.eu.cciradih.yawb.data.transfer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -12,7 +12,7 @@ public class WeChatSendMsgTransfer {
     @JsonProperty("ClientMsgId")
     private String clientMsgId;
     @JsonProperty("MediaId")
-    private String mediaId = "";
+    private String mediaId;
     @JsonProperty("FromUserName")
     private String fromUserName;
     @JsonProperty("ToUserName")

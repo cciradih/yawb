@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.component;
+package org.eu.cciradih.yawb.component;
 
 import okhttp3.Cookie;
 import okhttp3.CookieJar;

@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.data.query;
+package org.eu.cciradih.yawb.data.query;
 
 import lombok.Data;
 

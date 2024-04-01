@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.data.transfer;
+package org.eu.cciradih.yawb.data.transfer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

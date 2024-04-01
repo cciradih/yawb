@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.component.task;
+package org.eu.cciradih.yawb.component.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -6,14 +6,14 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.eu.cciradih.wechat.component.HttpClientComponent;
-import org.eu.cciradih.wechat.component.SchedulerComponent;
-import org.eu.cciradih.wechat.data.transfer.WeChatContactTransfer;
-import org.eu.cciradih.wechat.data.transfer.WeChatSyncKeyTransfer;
-import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
-import org.eu.cciradih.wechat.enumeration.CacheEnum;
-import org.eu.cciradih.wechat.enumeration.CodeEnum;
-import org.eu.cciradih.wechat.enumeration.TaskEnum;
+import org.eu.cciradih.yawb.component.HttpClientComponent;
+import org.eu.cciradih.yawb.component.SchedulerComponent;
+import org.eu.cciradih.yawb.data.transfer.WeChatContactTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatSyncKeyTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
+import org.eu.cciradih.yawb.enumeration.CacheEnum;
+import org.eu.cciradih.yawb.enumeration.CodeEnum;
+import org.eu.cciradih.yawb.enumeration.TaskEnum;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;

@@ -1,15 +1,15 @@
-package org.eu.cciradih.wechat.controller;
+package org.eu.cciradih.yawb.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.eu.cciradih.wechat.component.HttpClientComponent;
-import org.eu.cciradih.wechat.data.query.BotQuery;
-import org.eu.cciradih.wechat.data.transfer.WeChatContactTransfer;
-import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
-import org.eu.cciradih.wechat.enumeration.CacheEnum;
+import org.eu.cciradih.yawb.component.HttpClientComponent;
+import org.eu.cciradih.yawb.data.query.BotQuery;
+import org.eu.cciradih.yawb.data.transfer.WeChatContactTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
+import org.eu.cciradih.yawb.enumeration.CacheEnum;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;

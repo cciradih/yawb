@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat;
+package org.eu.cciradih.yawb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

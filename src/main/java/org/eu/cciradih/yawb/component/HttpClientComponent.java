@@ -1,12 +1,12 @@
-package org.eu.cciradih.wechat.component;
+package org.eu.cciradih.yawb.component;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import okhttp3.*;
-import org.eu.cciradih.wechat.data.transfer.WeChatSendMsgTransfer;
-import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatSendMsgTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
@@ -16,7 +16,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -143,7 +142,7 @@ public class HttpClientComponent {
         baseRequest.setBaseRequest(weChatTransfer);
         String content = this.objectMapper.writeValueAsString(baseRequest);
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, content);
+        RequestBody requestBody = RequestBody.create(content, mediaType);
 
         Request request = new Request.Builder()
                 .post(requestBody)
@@ -172,7 +171,7 @@ public class HttpClientComponent {
                 .build();
 
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, "{}");
+        RequestBody requestBody = RequestBody.create("{}", mediaType);
 
         Request request = new Request.Builder()
                 .post(requestBody)
@@ -274,7 +273,7 @@ public class HttpClientComponent {
         baseRequest.setScene(0);
         String content = this.objectMapper.writeValueAsString(baseRequest);
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, content);
+        RequestBody requestBody = RequestBody.create(content, mediaType);
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")

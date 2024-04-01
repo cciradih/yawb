@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.component;
+package org.eu.cciradih.yawb.component;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.TaskScheduler;

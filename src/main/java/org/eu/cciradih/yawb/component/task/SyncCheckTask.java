@@ -1,14 +1,14 @@
-package org.eu.cciradih.wechat.component.task;
+package org.eu.cciradih.yawb.component.task;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eu.cciradih.wechat.component.HttpClientComponent;
-import org.eu.cciradih.wechat.data.transfer.WeChatContactTransfer;
-import org.eu.cciradih.wechat.data.transfer.WeChatMsgTransfer;
-import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
-import org.eu.cciradih.wechat.enumeration.CodeEnum;
-import org.eu.cciradih.wechat.enumeration.MsgTypeEnum;
+import org.eu.cciradih.yawb.component.HttpClientComponent;
+import org.eu.cciradih.yawb.data.transfer.WeChatContactTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatMsgTransfer;
+import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
+import org.eu.cciradih.yawb.enumeration.CodeEnum;
+import org.eu.cciradih.yawb.enumeration.MsgTypeEnum;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;
