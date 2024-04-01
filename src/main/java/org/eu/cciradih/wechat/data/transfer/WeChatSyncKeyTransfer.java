@@ -1,4 +1,4 @@
-package org.eu.cciradih.wechat.data;
+package org.eu.cciradih.wechat.data.transfer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -3,20 +3,20 @@
 ## 功能
 
 - [x] Login 登录
-  - [x] JS Login
-  - [x] QR Code
-  - [x] Login
+    - [x] JS Login
+    - [x] QR Code
+    - [x] Login
 - [x] Init 初始化
 - [x] Contact 获取通讯录
 - [x] Sync 同步消息
-  - [x] Sync Check
-  - [x] Sync
+    - [x] Sync Check
+    - [x] Sync
 - [ ] 发送消息
 - [ ] ……
 
 ## 使用
 
-开箱即用（Out of the box），代码很简单，没有过度封装。
+JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度封装。
 
 运行后打开控制台输出的二维码链接，扫码登录即可。
 

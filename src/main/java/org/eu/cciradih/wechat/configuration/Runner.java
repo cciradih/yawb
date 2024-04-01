@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eu.cciradih.wechat.component.HttpClientComponent;
 import org.eu.cciradih.wechat.component.SchedulerComponent;
 import org.eu.cciradih.wechat.component.task.WebWxNewLoginPageTask;
-import org.eu.cciradih.wechat.data.WeChatTransfer;
+import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
 import org.eu.cciradih.wechat.enumeration.TaskEnum;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

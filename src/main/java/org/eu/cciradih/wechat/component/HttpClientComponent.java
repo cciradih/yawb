@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import okhttp3.*;
-import org.eu.cciradih.wechat.data.WeChatTransfer;
+import org.eu.cciradih.wechat.data.transfer.WeChatSendMsgTransfer;
+import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
@@ -16,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,12 +68,12 @@ public class HttpClientComponent {
         return this.parseStringResponse(response);
     }
 
-    public String getQrCodeUri(String jsLogin) {
+    public String getQrCodeUri(String uuid) {
         return new HttpUrl.Builder()
                 .scheme("https")
                 .host("login.wx.qq.com")
                 .addPathSegment("qrcode")
-                .addPathSegment(jsLogin)
+                .addPathSegment(uuid)
                 .build()
                 .toString();
     }
@@ -249,6 +251,48 @@ public class HttpClientComponent {
         weChatTransfer.setSyncKey(webWxSync.getSyncKey());
         weChatTransfer.setCheckSyncKey(webWxSync.getSyncKey());
         return webWxSync;
+    }
+
+    @SneakyThrows
+    public void postWebWxSendMsg(WeChatTransfer weChatTransfer) {
+        long time = new Date().getTime() / 10000 * 10000;
+        long random = new SecureRandom().nextLong(1000, 9999);
+        String id = String.valueOf(time + random);
+        WeChatSendMsgTransfer weChatSendMsgTransfer = WeChatSendMsgTransfer.builder()
+                .localId(id)
+                .clientMsgId(id)
+                .fromUserName(weChatTransfer.getUser().getUserName())
+                .toUserName(weChatTransfer.getToUserName())
+                .type(1)
+                .content(weChatTransfer.getContent())
+                .build();
+        WeChatTransfer baseRequest = new WeChatTransfer();
+        baseRequest.setBaseRequest(weChatTransfer);
+        baseRequest.setMsg(weChatSendMsgTransfer);
+        baseRequest.setScene(0);
+        String content = this.objectMapper.writeValueAsString(baseRequest);
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody requestBody = RequestBody.create(mediaType, content);
+
+        HttpUrl httpUrl = new HttpUrl.Builder()
+                .scheme("https")
+                .host(weChatTransfer.getHost())
+                .addPathSegments("cgi-bin/mmwebwx-bin/webwxsendmsg")
+                .addQueryParameter("pass_ticket", weChatTransfer.getPassTicket())
+                .addQueryParameter("lang", "zh_CN")
+                .build();
+
+        Request request = new Request.Builder()
+                .post(requestBody)
+                .url(httpUrl)
+                .build();
+
+        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
+        if (responseBody == null) {
+            throw new RuntimeException();
+        }
+        String response = responseBody.string();
+        System.out.println(response);
     }
 
     @SneakyThrows
