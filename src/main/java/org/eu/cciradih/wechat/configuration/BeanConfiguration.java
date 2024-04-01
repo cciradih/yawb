@@ -32,7 +32,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public Cache<String, Object> cache() {
+    public Cache<String, String> cache() {
         return Caffeine.newBuilder()
                 .build();
     }

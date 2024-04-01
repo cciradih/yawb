@@ -1,7 +1,10 @@
 package org.eu.cciradih.wechat.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.eu.cciradih.wechat.component.HttpClientComponent;
 import org.eu.cciradih.wechat.data.query.BotQuery;
 import org.eu.cciradih.wechat.data.transfer.WeChatContactTransfer;
@@ -9,43 +12,39 @@ import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
 import org.eu.cciradih.wechat.enumeration.CacheEnum;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/bot")
 @RestController
 @RequiredArgsConstructor
 public class BotController {
-    private final Cache<String, Object> cache;
+    private final Cache<String, String> cache;
     private final HttpClientComponent httpClientComponent;
+    private final ObjectMapper objectMapper;
 
+    @SneakyThrows
     @GetMapping("/user")
     public WeChatContactTransfer getUser() {
-        WeChatTransfer webWxInit = (WeChatTransfer) this.cache.getIfPresent(CacheEnum.WEB_WX_INIT.getName());
-        if (webWxInit == null) {
-            throw new RuntimeException();
-        }
-        return webWxInit.getUser();
+        String user = this.cache.getIfPresent(CacheEnum.USER.getName());
+        return this.objectMapper.readValue(user, WeChatContactTransfer.class);
     }
 
+    @SneakyThrows
     @GetMapping("/memberList")
-    public List<WeChatContactTransfer> getMemberList() {
-        WeChatTransfer webWxGetContact = (WeChatTransfer) this.cache.getIfPresent(CacheEnum.WEB_WX_GET_CONTACT.getName());
-        if (webWxGetContact == null) {
-            throw new RuntimeException();
-        }
-        return webWxGetContact.getMemberList();
+    public Map<String, WeChatContactTransfer> getMemberList() {
+        String weChatContactTransferMap = this.cache.getIfPresent(CacheEnum.WE_CHAT_CONTACT_TRANSFER_MAP.getName());
+        return this.objectMapper.readValue(weChatContactTransferMap, new TypeReference<>() {
+        });
     }
 
+    @SneakyThrows
     @PostMapping("/msg")
-    public void sendMsg(@RequestBody BotQuery botQuery) {
-        WeChatTransfer webWxNewLoginPage = (WeChatTransfer) this.cache.getIfPresent(CacheEnum.WEB_WX_NEW_LOGIN_PAGE.getName());
-        WeChatTransfer webWxInit = (WeChatTransfer) this.cache.getIfPresent(CacheEnum.WEB_WX_INIT.getName());
-        if (webWxNewLoginPage == null || webWxInit == null) {
-            throw new RuntimeException();
-        }
-        webWxNewLoginPage.setUser(webWxInit.getUser());
-        webWxNewLoginPage.setToUserName(botQuery.getToUserName());
-        webWxNewLoginPage.setContent(botQuery.getContent());
-        this.httpClientComponent.postWebWxSendMsg(webWxNewLoginPage);
+    public void postMsg(@RequestBody BotQuery botQuery) {
+        WeChatTransfer baseRequest = this.objectMapper.readValue(this.cache.getIfPresent(CacheEnum.BASE_REQUEST.getName()), WeChatTransfer.class);
+        WeChatContactTransfer user = this.objectMapper.readValue(this.cache.getIfPresent(CacheEnum.USER.getName()), WeChatContactTransfer.class);
+        baseRequest.setUser(user);
+        baseRequest.setToUserName(botQuery.getToUserName());
+        baseRequest.setContent(botQuery.getContent());
+        this.httpClientComponent.postWebWxSendMsg(baseRequest);
     }
 }

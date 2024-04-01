@@ -11,7 +11,11 @@
 - [x] Sync 同步消息
     - [x] Sync Check
     - [x] Sync
-- [ ] 发送消息
+- [x] 发送消息
+- [x] REST API
+    - [x] /bot/user GET User
+    - [x] /bot/memberList GET MemberList
+    - [x] /bot/msg POST Msg
 - [ ] ……
 
 ## 使用

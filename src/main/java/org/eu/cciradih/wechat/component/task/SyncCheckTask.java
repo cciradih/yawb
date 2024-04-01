@@ -7,10 +7,12 @@ import org.eu.cciradih.wechat.component.HttpClientComponent;
 import org.eu.cciradih.wechat.data.transfer.WeChatContactTransfer;
 import org.eu.cciradih.wechat.data.transfer.WeChatMsgTransfer;
 import org.eu.cciradih.wechat.data.transfer.WeChatTransfer;
+import org.eu.cciradih.wechat.enumeration.CodeEnum;
+import org.eu.cciradih.wechat.enumeration.MsgTypeEnum;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -29,37 +31,37 @@ public class SyncCheckTask implements Runnable {
     public void run() {
         WeChatTransfer syncCheck = this.httpClientComponent.getSyncCheck(weChatTransfer);
         String retCode = syncCheck.getRetCode();
-        if (!"0".equals(retCode)) {
+        CodeEnum codeEnum = CodeEnum.getByName(retCode);
+        if (codeEnum == CodeEnum.X_SUCCESS) {
+            String selector = syncCheck.getSelector();
+            codeEnum = CodeEnum.getByName(selector);
+            if (codeEnum == CodeEnum.HAS_MSG) {
+                WeChatTransfer webWxSync = this.httpClientComponent.postWebWxSync(this.weChatTransfer);
+                List<WeChatMsgTransfer> webWxSyncAddMsgList = webWxSync.getAddMsgList();
+                if (!CollectionUtils.isEmpty(webWxSyncAddMsgList)) {
+                    webWxSyncAddMsgList.forEach(weChatMsgTransfer -> {
+                        Integer msgType = weChatMsgTransfer.getMsgType();
+                        MsgTypeEnum msgTypeEnum = MsgTypeEnum.getByName(msgType);
+                        String content = weChatMsgTransfer.getContent();
+                        String fromUserName = weChatMsgTransfer.getFromUserName();
+                        WeChatContactTransfer fromUser = this.weChatContactTransferMap.get(fromUserName);
+                        if (fromUser != null) {
+                            fromUserName = fromUser.getRemarkName().equals("") ? fromUser.getNickName() : fromUser.getRemarkName();
+                        }
+                        String toUserName = weChatMsgTransfer.getToUserName();
+                        WeChatContactTransfer toUser = this.weChatContactTransferMap.get(toUserName);
+                        if (toUser != null) {
+                            toUserName = toUser.getRemarkName().equals("") ? toUser.getNickName() : toUser.getRemarkName();
+                        }
+                        log.info("msgType: {}, fromUserName: {}, toUserName: {}, content: {}", msgTypeEnum, fromUserName, toUserName, content);
+                    });
+                }
+            }
+        } else {
             log.error("Ret Code: {}", retCode);
             Thread.currentThread().interrupt();
             if (Thread.currentThread().isInterrupted()) {
                 this.configurableApplicationContext.close();
-            }
-        }
-        String selector = syncCheck.getSelector();
-        if (StringUtils.hasText(selector)) {
-            if ("2".equals(selector)) {
-                WeChatTransfer webWxSync = this.httpClientComponent.postWebWxSync(this.weChatTransfer);
-                List<WeChatMsgTransfer> webWxSyncAddMsgList = webWxSync.getAddMsgList();
-                if (webWxSyncAddMsgList != null && !webWxSyncAddMsgList.isEmpty()) {
-                    webWxSyncAddMsgList
-                            .stream()
-                            .filter(weChatMsgTransfer -> weChatMsgTransfer.getMsgType() == 1)
-                            .forEach(weChatMsgTransfer -> {
-                                String content = weChatMsgTransfer.getContent();
-                                String fromUserName = weChatMsgTransfer.getFromUserName();
-                                WeChatContactTransfer fromUser = this.weChatContactTransferMap.get(fromUserName);
-                                if (fromUser != null) {
-                                    fromUserName = fromUser.getRemarkName().equals("") ? fromUser.getNickName() : fromUser.getRemarkName();
-                                }
-                                String toUserName = weChatMsgTransfer.getToUserName();
-                                WeChatContactTransfer toUser = this.weChatContactTransferMap.get(toUserName);
-                                if (toUser != null) {
-                                    toUserName = toUser.getRemarkName().equals("") ? toUser.getNickName() : toUser.getRemarkName();
-                                }
-                                log.info("fromUserName: {}, toUserName: {}, content: {}", fromUserName, toUserName, content);
-                            });
-                }
             }
         }
     }

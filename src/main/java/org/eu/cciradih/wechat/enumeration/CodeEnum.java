@@ -8,8 +8,12 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum CodeEnum {
-    TIMEOUT("408"),
-    SUCCESS("200"),
+    UNKNOWN("-1"),
+    S_AWAIT("201"),
+    S_SUCCESS("200"),
+    S_TIMEOUT("408"),
+    X_SUCCESS("0"),
+    HAS_MSG("2"),
     ;
     private final String name;
 
@@ -17,6 +21,6 @@ public enum CodeEnum {
         return Arrays.stream(values())
                 .filter(codeEnum -> codeEnum.getName().equals(name))
                 .findFirst()
-                .orElseThrow();
+                .orElse(UNKNOWN);
     }
 }
