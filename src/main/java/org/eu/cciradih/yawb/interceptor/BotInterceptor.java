@@ -1,6 +1,6 @@
 package org.eu.cciradih.yawb.interceptor;
 
-import org.eu.cciradih.yawb.data.transfer.WeChatSendMsgTransfer;
+import org.eu.cciradih.yawb.data.WeChatSendMsgTransfer;
 import org.eu.cciradih.yawb.enumeration.MsgTypeEnum;
 
 public interface BotInterceptor {

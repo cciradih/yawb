@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.eu.cciradih.yawb.component.WeChatClientComponent;
 import org.eu.cciradih.yawb.component.SchedulerComponent;
-import org.eu.cciradih.yawb.data.transfer.WeChatContactTransfer;
-import org.eu.cciradih.yawb.data.transfer.WeChatSyncKeyTransfer;
-import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
+import org.eu.cciradih.yawb.component.WeChatClientComponent;
+import org.eu.cciradih.yawb.data.WeChatContactTransfer;
+import org.eu.cciradih.yawb.data.WeChatSyncKeyTransfer;
+import org.eu.cciradih.yawb.data.WeChatTransfer;
 import org.eu.cciradih.yawb.enumeration.CacheEnum;
 import org.eu.cciradih.yawb.enumeration.CodeEnum;
 import org.eu.cciradih.yawb.enumeration.TaskEnum;
@@ -56,7 +56,7 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
 
                 Map<String, WeChatContactTransfer> weChatContactTransferMap = webWxGetContact.getMemberList()
                         .stream()
-                        .collect(Collectors.toMap(WeChatContactTransfer::getUserName, Function.identity()));
+                        .collect(Collectors.toMap(WeChatContactTransfer::getUserName, Function.identity(), (first, second) -> first));
                 WeChatContactTransfer user = webWxInit.getUser();
                 weChatContactTransferMap.put(user.getUserName(), user);
 
