@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.eu.cciradih.yawb.component.HttpClientComponent;
+import org.eu.cciradih.yawb.component.WeChatClientComponent;
 import org.eu.cciradih.yawb.component.SchedulerComponent;
 import org.eu.cciradih.yawb.data.transfer.WeChatContactTransfer;
 import org.eu.cciradih.yawb.data.transfer.WeChatSyncKeyTransfer;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class WebWxTask implements Runnable, ExitCodeGenerator {
-    private final HttpClientComponent httpClientComponent;
+    private final WeChatClientComponent weChatClientComponent;
     private final SchedulerComponent schedulerComponent;
     private final SyncCheckTask syncCheckTask;
     private final Cache<String, String> cache;
@@ -37,7 +37,7 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
     @SneakyThrows
     @Override
     public void run() {
-        WeChatTransfer weChatTransfer = this.httpClientComponent.getLoginUri(uuid);
+        WeChatTransfer weChatTransfer = this.weChatClientComponent.getLoginUri(uuid);
         String code = weChatTransfer.getCode();
         CodeEnum codeEnum = CodeEnum.getByName(code);
         switch (codeEnum) {
@@ -45,14 +45,14 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
             case S_SUCCESS -> {
                 log.info("Logged in, starting initialization.");
                 String redirectUri = weChatTransfer.getRedirectUri();
-                WeChatTransfer webWxNewLoginPage = this.httpClientComponent.getWebWxNewLoginPage(redirectUri);
+                WeChatTransfer webWxNewLoginPage = this.weChatClientComponent.getWebWxNewLoginPage(redirectUri);
                 this.cache.put(CacheEnum.BASE_REQUEST.getName(), this.objectMapper.writeValueAsString(webWxNewLoginPage));
 
-                WeChatTransfer webWxInit = this.httpClientComponent.postWebWxInit(webWxNewLoginPage);
+                WeChatTransfer webWxInit = this.weChatClientComponent.postWebWxInit(webWxNewLoginPage);
 
                 WeChatSyncKeyTransfer weChatSyncKeyTransfer = webWxInit.getSyncKey();
                 webWxNewLoginPage.setSyncKey(weChatSyncKeyTransfer);
-                WeChatTransfer webWxGetContact = this.httpClientComponent.postWebWxGetContact(webWxNewLoginPage);
+                WeChatTransfer webWxGetContact = this.weChatClientComponent.postWebWxGetContact(webWxNewLoginPage);
 
                 Map<String, WeChatContactTransfer> weChatContactTransferMap = webWxGetContact.getMemberList()
                         .stream()
@@ -72,9 +72,9 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
             }
             case S_TIMEOUT -> {
                 log.info("Timeout, regenerate the QR Code Uri.");
-                WeChatTransfer jsLogin = this.httpClientComponent.getJsLogin();
+                WeChatTransfer jsLogin = this.weChatClientComponent.getJsLogin();
                 this.uuid = jsLogin.getUuid();
-                String qrCodeUri = this.httpClientComponent.getQrCodeUri(jsLogin.getUuid());
+                String qrCodeUri = this.weChatClientComponent.getQrCodeUri(jsLogin.getUuid());
                 log.info("QR Code Uri: {}", qrCodeUri);
             }
         }

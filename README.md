@@ -11,18 +11,28 @@
 - [x] Sync 同步消息
     - [x] Sync Check
     - [x] Sync
-- [x] 发送消息
+- [x] Send Msg 发送消息
 - [x] REST API
     - [x] /bot/user GET User
     - [x] /bot/memberList GET MemberList
     - [x] /bot/msg POST Msg
+- [x] Interceptor 拦截器【插件】
 - [ ] ……
 
 ## 使用
 
+### 运行
+
 JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度封装。
 
 运行后打开控制台输出的二维码链接，扫码登录即可。
+
+### 拦截器【插件】
+
+参考 `org.eu.cciradih.yawb.interceptor.impl` 下面的实现。
+
+> [!CAUTION]
+> 做了拦截器排序 `BotInterceptorSort.value()` 校验。
 
 ## 提示
 
