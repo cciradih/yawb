@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.eu.cciradih.yawb.component.HttpClientComponent;
+import org.eu.cciradih.yawb.component.WeChatClientComponent;
 import org.eu.cciradih.yawb.data.query.BotQuery;
 import org.eu.cciradih.yawb.data.transfer.WeChatContactTransfer;
 import org.eu.cciradih.yawb.data.transfer.WeChatTransfer;
@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BotController {
     private final Cache<String, String> cache;
-    private final HttpClientComponent httpClientComponent;
+    private final WeChatClientComponent weChatClientComponent;
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
@@ -45,6 +45,6 @@ public class BotController {
         baseRequest.setUser(user);
         baseRequest.setToUserName(botQuery.getToUserName());
         baseRequest.setContent(botQuery.getContent());
-        this.httpClientComponent.postWebWxSendMsg(baseRequest);
+        this.weChatClientComponent.postWebWxSendMsg(baseRequest);
     }
 }

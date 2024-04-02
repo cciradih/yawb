@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class HttpClientComponent {
+public class WeChatClientComponent {
     private final OkHttpClient okHttpClient;
     private final ObjectMapper objectMapper;
 
