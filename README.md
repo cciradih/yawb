@@ -12,10 +12,8 @@
     - [x] Sync Check
     - [x] Sync
 - [x] Send Msg 发送消息
-- [x] REST API
-    - [x] /bot/user GET User
-    - [x] /bot/memberList GET MemberList
-    - [x] /bot/msg POST Msg
+    - [x] TEXT 文本消息
+    - [ ] ……
 - [x] Interceptor 拦截器【插件】
 - [ ] ……
 
@@ -26,6 +24,12 @@
 JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度封装。
 
 运行后打开控制台输出的二维码链接，扫码登录即可。
+
+> [!WARNING]
+> 不建议在其它终端上使用已登录本程序的账号发送消息。
+
+> [!NOTE]
+> 进行语音视频通信时，由于微信服务器没返回正确的 statusLine 会抛出异常。
 
 ### 拦截器【插件】
 

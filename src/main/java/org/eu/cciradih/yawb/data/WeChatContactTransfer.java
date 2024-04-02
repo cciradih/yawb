@@ -1,4 +1,4 @@
-package org.eu.cciradih.yawb.data.transfer;
+package org.eu.cciradih.yawb.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

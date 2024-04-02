@@ -1,7 +1,7 @@
 package org.eu.cciradih.yawb.interceptor.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eu.cciradih.yawb.data.transfer.WeChatSendMsgTransfer;
+import org.eu.cciradih.yawb.data.WeChatSendMsgTransfer;
 import org.eu.cciradih.yawb.enumeration.MsgTypeEnum;
 import org.eu.cciradih.yawb.interceptor.BotInterceptor;
 import org.eu.cciradih.yawb.interceptor.BotInterceptorSort;
