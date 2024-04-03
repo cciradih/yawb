@@ -1,6 +1,6 @@
 bot:
   interceptor:
     gemini:
-      command:
-      host:
-      key:
+      command: ${BOT_INTERCEPTOR_GEMINI_COMMAND}
+      host: ${BOT_INTERCEPTOR_GEMINI_HOST}
+      key: ${BOT_INTERCEPTOR_GEMINI_KEY}

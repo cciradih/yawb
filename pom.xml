@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.eu.cciradih</groupId>
     <artifactId>yawb</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <name>yawb</name>
     <description>Yet Another WeChat Bot</description>
     <properties>
@@ -25,6 +25,10 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
