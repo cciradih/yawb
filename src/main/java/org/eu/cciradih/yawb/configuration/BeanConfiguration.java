@@ -25,9 +25,9 @@ public class BeanConfiguration {
     public OkHttpClient httpClient(CookieJarComponent cookieJarComponent) {
         return new OkHttpClient.Builder()
                 .cookieJar(cookieJarComponent)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
 
