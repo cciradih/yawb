@@ -2,3 +2,4 @@
 .mvn
 target
 *.iml
+!/src/main/resources/.application-local.yml

@@ -9,13 +9,13 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum MsgTypeEnum {
     UNKNOWN(-1),
-    JUMP(51),
     TEXT(1),
     IMAGE(3),
     BUSINESS_CARD(42),
     VIDEO(43),
     EMOJI(47),
     FILE(49),
+    JUMP(51),
     VOICE(53),
     GROUP_VOICE(10000),
     ;

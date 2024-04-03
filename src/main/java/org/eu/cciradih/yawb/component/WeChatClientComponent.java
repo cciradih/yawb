@@ -293,8 +293,6 @@ public class WeChatClientComponent {
         if (responseBody == null) {
             throw new RuntimeException();
         }
-        String response = responseBody.string();
-        System.out.println(response);
     }
 
     @SneakyThrows

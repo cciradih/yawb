@@ -1,0 +1,6 @@
+bot:
+  interceptor:
+    gemini:
+      command:
+      host:
+      key:
