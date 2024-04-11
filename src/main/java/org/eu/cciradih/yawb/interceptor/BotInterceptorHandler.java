@@ -1,9 +1,8 @@
 package org.eu.cciradih.yawb.interceptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.eu.cciradih.yawb.component.CacheComponent;
 import org.eu.cciradih.yawb.component.WeChatClientComponent;
 import org.eu.cciradih.yawb.data.WeChatContactTransfer;
 import org.eu.cciradih.yawb.data.WeChatSendMsgTransfer;
@@ -20,8 +19,7 @@ import java.util.Map;
 public class BotInterceptorHandler {
     private final Map<Integer, BotInterceptor> botInterceptorMap;
     private final WeChatClientComponent weChatClientComponent;
-    private final Cache<String, String> cache;
-    private final ObjectMapper objectMapper;
+    private final CacheComponent cacheComponent;
 
     @SneakyThrows
     public void send(MsgTypeEnum msgTypeEnum, String fromUser, String toUser, String content) {
@@ -49,8 +47,8 @@ public class BotInterceptorHandler {
             return;
         }
 
-        WeChatTransfer baseRequest = this.objectMapper.readValue(this.cache.getIfPresent(CacheEnum.BASE_REQUEST.getName()), WeChatTransfer.class);
-        WeChatContactTransfer user = this.objectMapper.readValue(this.cache.getIfPresent(CacheEnum.USER.getName()), WeChatContactTransfer.class);
+        WeChatTransfer baseRequest = this.cacheComponent.get(CacheEnum.BASE_REQUEST, WeChatTransfer.class);
+        WeChatContactTransfer user = this.cacheComponent.get(CacheEnum.USER, WeChatContactTransfer.class);
         baseRequest.setUser(user);
         baseRequest.setToUserName(chain.getToUserName());
         baseRequest.setContent(chain.getContent());

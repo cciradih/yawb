@@ -15,8 +15,6 @@
     - [x] Sync Msg
 - [x] Send Msg 发送消息
 - [x] Interceptor 拦截器【插件】
-    - [x] Gemini Google DeepMind 人工智能
-- [ ] ……
 
 ## 使用
 
@@ -38,24 +36,6 @@ JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度�
 
 > [!CAUTION]
 > 做了拦截器排序 `BotInterceptorSort.value()` 校验。
-
-1. Gemini Google DeepMind 人工智能
-
-修改文件 `src/main/resources/application-local.yml`
-
-```yaml
-bot:
-  interceptor:
-    gemini:
-      # 【必填】指令标识
-      # 例如 /g，则会响应以 /g 开头的文本消息
-      command:
-      # 【必填】请求 Gemini 的域名，会拼接固定路径 /v1beta/models/gemini-pro:generateContent
-      # 例如 gemini.xxx.com
-      host:
-      # 【必填】请求 Gemini 的 Key
-      key:
-```
 
 ## 提示
 
