@@ -59,12 +59,13 @@ public class WeChatClientComponent {
                 .url(httpUrl)
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            return this.parseStringResponse(responseBody.string());
         }
-        String response = responseBody.string();
-        return this.parseStringResponse(response);
     }
 
     public String getQrCodeUri(String uuid) {
@@ -96,12 +97,13 @@ public class WeChatClientComponent {
                 .url(httpUrl)
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            return this.parseStringResponse(responseBody.string());
         }
-        String response = responseBody.string();
-        return this.parseStringResponse(response);
     }
 
     @SneakyThrows
@@ -118,14 +120,19 @@ public class WeChatClientComponent {
                 .header("version", "2.0.0")
                 .build();
 
-        Response response = this.okHttpClient.newCall(request).execute();
-        WeChatTransfer weChatTransfer = this.parseXmlResponse(response);
-        weChatTransfer.setHost(httpUrl.host());
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            WeChatTransfer weChatTransfer = this.parseXmlResponse(responseBody.string());
+            weChatTransfer.setHost(httpUrl.host());
 
-        long time = new Date().getTime();
-        String deviceId = "e" + String.valueOf(time).repeat(2).substring(0, 15);
-        weChatTransfer.setDeviceId(deviceId);
-        return weChatTransfer;
+            long time = new Date().getTime();
+            String deviceId = "e" + String.valueOf(time).repeat(2).substring(0, 15);
+            weChatTransfer.setDeviceId(deviceId);
+            return weChatTransfer;
+        }
     }
 
     @SneakyThrows
@@ -150,12 +157,13 @@ public class WeChatClientComponent {
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            return this.objectMapper.readValue(responseBody.string(), WeChatTransfer.class);
         }
-        String response = responseBody.string();
-        return this.objectMapper.readValue(response, WeChatTransfer.class);
     }
 
     @SneakyThrows
@@ -179,12 +187,13 @@ public class WeChatClientComponent {
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            return this.objectMapper.readValue(responseBody.string(), WeChatTransfer.class);
         }
-        String response = responseBody.string();
-        return this.objectMapper.readValue(response, WeChatTransfer.class);
     }
 
     @SneakyThrows
@@ -208,12 +217,13 @@ public class WeChatClientComponent {
                 .url(httpUrl)
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            return this.parseStringResponse(responseBody.string());
         }
-        String response = responseBody.string();
-        return this.parseStringResponse(response);
     }
 
     @SneakyThrows
@@ -243,15 +253,16 @@ public class WeChatClientComponent {
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
+            WeChatTransfer webWxSync = this.objectMapper.readValue(responseBody.string(), WeChatTransfer.class);
+            weChatTransfer.setSyncKey(webWxSync.getSyncKey());
+            weChatTransfer.setCheckSyncKey(webWxSync.getSyncKey());
+            return webWxSync;
         }
-        String response = responseBody.string();
-        WeChatTransfer webWxSync = this.objectMapper.readValue(response, WeChatTransfer.class);
-        weChatTransfer.setSyncKey(webWxSync.getSyncKey());
-        weChatTransfer.setCheckSyncKey(webWxSync.getSyncKey());
-        return webWxSync;
     }
 
     @SneakyThrows
@@ -289,9 +300,11 @@ public class WeChatClientComponent {
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .build();
 
-        ResponseBody responseBody = this.okHttpClient.newCall(request).execute().body();
-        if (responseBody == null) {
-            throw new RuntimeException();
+        try (Response response = this.okHttpClient.newCall(request).execute()) {
+            ResponseBody responseBody = response.body();
+            if (responseBody == null) {
+                throw new RuntimeException();
+            }
         }
     }
 
@@ -337,17 +350,11 @@ public class WeChatClientComponent {
     }
 
     @SneakyThrows
-    private WeChatTransfer parseXmlResponse(Response response) {
-        ResponseBody responseBody = response.body();
-        if (responseBody == null) {
-            throw new RuntimeException();
-        }
-
+    private WeChatTransfer parseXmlResponse(String response) {
         WeChatTransfer weChatTransfer = new WeChatTransfer();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        String responseString = responseBody.string();
-        byte[] bytes = responseString.getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         Document document = documentBuilder.parse(byteArrayInputStream);
 

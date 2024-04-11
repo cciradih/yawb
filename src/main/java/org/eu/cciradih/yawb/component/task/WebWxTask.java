@@ -1,11 +1,11 @@
 package org.eu.cciradih.yawb.component.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.eu.cciradih.yawb.component.CacheComponent;
 import org.eu.cciradih.yawb.component.SchedulerComponent;
 import org.eu.cciradih.yawb.component.WeChatClientComponent;
 import org.eu.cciradih.yawb.data.WeChatContactTransfer;
@@ -30,7 +30,7 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
     private final WeChatClientComponent weChatClientComponent;
     private final SchedulerComponent schedulerComponent;
     private final SyncCheckTask syncCheckTask;
-    private final Cache<String, String> cache;
+    private final CacheComponent cacheComponent;
     private final ObjectMapper objectMapper;
     private String uuid;
 
@@ -46,7 +46,7 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
                 log.info("Logged in, starting initialization.");
                 String redirectUri = weChatTransfer.getRedirectUri();
                 WeChatTransfer webWxNewLoginPage = this.weChatClientComponent.getWebWxNewLoginPage(redirectUri);
-                this.cache.put(CacheEnum.BASE_REQUEST.getName(), this.objectMapper.writeValueAsString(webWxNewLoginPage));
+                this.cacheComponent.put(CacheEnum.BASE_REQUEST, webWxNewLoginPage);
 
                 WeChatTransfer webWxInit = this.weChatClientComponent.postWebWxInit(webWxNewLoginPage);
 
@@ -60,8 +60,8 @@ public class WebWxTask implements Runnable, ExitCodeGenerator {
                 WeChatContactTransfer user = webWxInit.getUser();
                 weChatContactTransferMap.put(user.getUserName(), user);
 
-                this.cache.put(CacheEnum.USER.getName(), this.objectMapper.writeValueAsString(user));
-                this.cache.put(CacheEnum.WE_CHAT_CONTACT_TRANSFER_MAP.getName(), this.objectMapper.writeValueAsString(weChatContactTransferMap));
+                this.cacheComponent.put(CacheEnum.USER, user);
+                this.cacheComponent.put(CacheEnum.WE_CHAT_CONTACT_TRANSFER_MAP, weChatContactTransferMap);
 
                 this.syncCheckTask.setWeChatTransfer(webWxNewLoginPage);
                 this.syncCheckTask.setWeChatContactTransferMap(weChatContactTransferMap);

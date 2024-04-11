@@ -15,9 +15,6 @@
     - [x] Sync Msg
 - [x] Send Msg 发送消息
 - [x] Interceptor 拦截器【插件】
-    - [x] [Gemini - Google DeepMind](https://deepmind.google/technologies/gemini/)
-- [x] Health Check 健康检查 `/bot/health`
-- [ ] ……
 
 ## 使用
 
@@ -33,45 +30,12 @@ JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度�
 > [!NOTE]
 > 进行语音视频通信时，由于微信服务器没返回正确的 statusLine 会抛出异常。
 
-### 部署
-
-#### [Cloud Application Hosting for Developers | Render](https://render.com/)
-
-环境变量
-
-* [Gemini - Google DeepMind](https://deepmind.google/technologies/gemini/)
-
-名称|键
--|-
-指令标识|BOT_INTERCEPTOR_GEMINI_COMMAND
-请求 Gemini 的域名|BOT_INTERCEPTOR_GEMINI_HOST
-请求 Gemini 的 Key|BOT_INTERCEPTOR_GEMINI_KEY
-
-
 ### 拦截器【插件】
 
 参考 `org.eu.cciradih.yawb.interceptor.impl` 下面的实现。
 
 > [!CAUTION]
 > 做了拦截器排序 `BotInterceptorSort.value()` 校验。
-
-1. [Gemini - Google DeepMind](https://deepmind.google/technologies/gemini/)
-
-修改文件 `src/main/resources/application-local.yml`
-
-```yaml
-bot:
-  interceptor:
-    gemini:
-      # 【必填】指令标识
-      # 例如 /g，则会响应以 /g 开头的文本消息
-      command:
-      # 【必填】请求 Gemini 的域名，会拼接固定路径 /v1beta/models/gemini-pro:generateContent
-      # 例如 gemini.xxx.com
-      host:
-      # 【必填】请求 Gemini 的 Key
-      key:
-```
 
 ## 提示
 

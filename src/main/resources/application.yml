@@ -1,13 +1,3 @@
-server:
-  port: 25700
-  servlet:
-    context-path: /bot
 spring:
-  profiles:
-    active: local
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health
-      base-path: /
+  main:
+    web-application-type: none
