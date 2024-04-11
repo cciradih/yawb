@@ -18,9 +18,23 @@
 
 ## 使用
 
+JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度封装。
+
+```shell
+java -jar yawb-1.0.5.jar 
+```
+
+### 构建
+
+```shell
+mvn clean package -DskipTests
+```
+
 ### 运行
 
-JDK 17 环境开箱即用（Out of the box），代码很简单，没有过度封装。
+```shell
+java -jar target/yawb-1.0.5.jar 
+```
 
 运行后打开控制台输出的二维码链接，扫码登录即可。
 
