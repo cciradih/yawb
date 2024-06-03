@@ -12,7 +12,7 @@
 
     <groupId>org.eu.cciradih</groupId>
     <artifactId>yawb</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <name>yawb</name>
     <description>Yet Another WeChat Bot</description>
 
