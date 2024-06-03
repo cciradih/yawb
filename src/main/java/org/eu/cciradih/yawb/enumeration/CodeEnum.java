@@ -13,6 +13,7 @@ public enum CodeEnum {
     S_SUCCESS("200"),
     S_TIMEOUT("408"),
     X_SUCCESS("0"),
+    NORMAL("0"),
     HAS_MSG("2"),
     ;
     private final String name;
