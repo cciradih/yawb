@@ -46,6 +46,9 @@ public class WeChatTransfer {
     @JsonProperty("retcode")
     private String retCode;
 
+    @JsonProperty("BaseResponse")
+    private BaseResponse baseResponse;
+
     private String selector;
 
     @JsonProperty("SyncCheckKey")

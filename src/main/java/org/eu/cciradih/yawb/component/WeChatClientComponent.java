@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.eu.cciradih.yawb.data.WeChatSendMsgTransfer;
 import org.eu.cciradih.yawb.data.WeChatTransfer;
@@ -15,7 +16,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class WeChatClientComponent {
@@ -54,18 +56,7 @@ public class WeChatClientComponent {
                 .addQueryParameter("_", String.valueOf(time))
                 .build();
 
-        Request request = new Request.Builder()
-                .get()
-                .url(httpUrl)
-                .build();
-
-        try (Response response = this.okHttpClient.newCall(request).execute()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody == null) {
-                throw new RuntimeException();
-            }
-            return this.parseStringResponse(responseBody.string());
-        }
+        return getWeChatTransfer(httpUrl);
     }
 
     public String getQrCodeUri(String uuid) {
@@ -92,6 +83,10 @@ public class WeChatClientComponent {
                 .addQueryParameter("_", String.valueOf(time))
                 .build();
 
+        return getWeChatTransfer(httpUrl);
+    }
+
+    private WeChatTransfer getWeChatTransfer(HttpUrl httpUrl) throws IOException {
         Request request = new Request.Builder()
                 .get()
                 .url(httpUrl)
@@ -116,8 +111,8 @@ public class WeChatClientComponent {
                 .get()
                 .url(httpUrl)
                 .header("extspam", EXTSPAM)
-                .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("version", "2.0.0")
+                .header("Content-Type", "application/x-www-form-urlencoded")
                 .build();
 
         try (Response response = this.okHttpClient.newCall(request).execute()) {
@@ -151,19 +146,7 @@ public class WeChatClientComponent {
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = RequestBody.create(content, mediaType);
 
-        Request request = new Request.Builder()
-                .post(requestBody)
-                .url(httpUrl)
-                .header("Content-Type", "application/json; charset=UTF-8")
-                .build();
-
-        try (Response response = this.okHttpClient.newCall(request).execute()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody == null) {
-                throw new RuntimeException();
-            }
-            return this.objectMapper.readValue(responseBody.string(), WeChatTransfer.class);
-        }
+        return getWeChatTransfer(httpUrl, requestBody);
     }
 
     @SneakyThrows
@@ -181,6 +164,10 @@ public class WeChatClientComponent {
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = RequestBody.create("{}", mediaType);
 
+        return getWeChatTransfer(httpUrl, requestBody);
+    }
+
+    private WeChatTransfer getWeChatTransfer(HttpUrl httpUrl, RequestBody requestBody) throws IOException {
         Request request = new Request.Builder()
                 .post(requestBody)
                 .url(httpUrl)
@@ -212,18 +199,7 @@ public class WeChatClientComponent {
                 .addQueryParameter("_", String.valueOf(time))
                 .build();
 
-        Request request = new Request.Builder()
-                .get()
-                .url(httpUrl)
-                .build();
-
-        try (Response response = this.okHttpClient.newCall(request).execute()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody == null) {
-                throw new RuntimeException();
-            }
-            return this.parseStringResponse(responseBody.string());
-        }
+        return getWeChatTransfer(httpUrl);
     }
 
     @SneakyThrows
